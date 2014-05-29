@@ -83,99 +83,6 @@ def MirexFileInput(filename):
 		
 	return chordlist
 
-def MissedChord(miss, i, j):
-	
-	miss += 1
-	i += 1
-	j += 1
-	
-	return miss, i, j
-	
-def MatchedChord(match, i, j):
-	
-	match += 1
-	i += 1
-	j += 1
-	
-	return match, i, j
-
-
-def ReviewMissedChords(match, miss, failed_matches):
-
-    listLength = len(failed_matches)
-    dx = 1
-    j = 0
-    
-    print("List Length: " + str(listLength))
-    
-    #for k in range(0, listLength): print(k)
-    i = 0
-    
-    while(i < listLength - 1):
-    #for i in range(0, listLength - 1):
-    
-    	print(str(i) + " of " + str(listLength) )
-    	j += 1
-        diff_below = dx + 1
-        diff_above = dx + 1
-        
-        #print(failed_matches[i])
-        #print(str(failed_matches[i][1][0]) + " " + str(failed_matches[i][0][0]))
-    
-        
-    	if(i > 0): 
-    		diff_below = float(failed_matches[i - 1][1][0]) - float(failed_matches[i][0][0])
-    		print(diff_below)
-    	#if(i < listLength): diff_above = failed_matches[i + 1][0] - failed_matches[i][0]
-    	
-    	if abs(diff_below) <= dx:
-    		if("/" in failed_matches[i][0][1]):
-    			#print(chord1)
-    			#print(chord2)
-    			chord1, chord2 = failed_matches[i][0][1].split("/")
-    			if(chord1 == failed_matches[i-1][1][1] or chord2 == failed_matches[i-1][1][0]):
-    				failed_matches.pop(i)
-    				failed_matches.pop(i-1)
-    				match += 1
-    				miss -= 1
-    				listLength -= 2
-    		
-    		elif(failed_matches[i][0][1] == failed_matches[i-1][1][1]):
-    			failed_matches.pop(i)
-    			failed_matches.pop(i-1)
-    			match += 1
-    			miss -= 1
-    			listLength -= 2
-
-    			
-    	if(i < listLength - 3): diff_above = failed_matches[i + 1][1][0] - failed_matches[i][0][0]
-    			
-    	if abs(diff_above) <= dx:
-    		if("/" in failed_matches[i][0][1]):
-    			chord1, chord2 = failed_matches[i][0][1].split("/")
-    			if(chord1 == failed_matches[i+1][1][1] or chord2 == failed_matches[i+1][1][0]):
-    				failed_matches.pop(i+1)
-    				failed_matches.pop(i)
-    				match += 1
-    				miss -= 1
-    				listLength -= 2
-
-    		
-    		elif(failed_matches[i][1] == failed_matches[i-1][1]):
-    			failed_matches.pop(i+1)
-    			failed_matches.pop(i)
-    			match += 1
-    			miss -=1
-    			listLength -= 2
-		
-    	#print("end of for, i: " + str(i))
-    	i+=1
-    
-    #print(listLength)
-    #print("j: " + str(j))
-    return match, miss, failed_matches
-
-
 #Proof of Concept Comparison, Needs Rewrite:
 def Compare(chordlist_1, chordlist_2):
 	
@@ -223,49 +130,39 @@ def Compare(chordlist_1, chordlist_2):
 			else: i += 1
 			miss += 1
 		
-		elif("/" in chordlist_1[i][1]):
-			chord1, chord2 = chordlist_1[i][1].split("/")
-			
-			if(chord1 in chordlist_2[j][1] or chord2 in chordlist_2[j][1]):
-			    match, i, j = MatchedChord(match, i, j)
-			
-			else:
-				failed_matches.append([chordlist_1[i], chordlist_2[j]])
-				miss, i, j = MissedChord(miss, i, j)	
-		
 		elif(chordlist_1[i][1] == chordlist_2[j][1]):
-			match, i, j = MatchedChord(match, i, j)		
+			match += 1
+			i += 1
+			j += 1
 			
 		else:
 			failed_matches.append([chordlist_1[i], chordlist_2[j]])
-			miss, i, j = MissedChord(miss, i, j)
+			miss += 1
+			i += 1
+			j += 1
 		
 		if(chd1_length <= i and chd2_length <= j): exit = True
 		
 		elif(chd1_length <= i):
 			miss += chd2_length - j
-			for k in range(j, chd2_length): failed_matches.append([float("inf"), "N"], chordlist_2[k])
+			for k in range(j, chd2_length): failed_matches.append(["List 1 Ended", "N"], chordlist_2[k])
 			exit = True
 			
 		elif(chd2_length <= j):
 			miss += chd1_length - i
-			for k in range(i, chd1_length): failed_matches.append([chordlist_1[k],[float("inf"), "N"]])
+			for k in range(i, chd1_length): failed_matches.append([chordlist_1[k],["List 2 Ended", "N"]])
 			exit = True
 		
-	match, miss, failed_matches = ReviewMissedChords(match, miss, failed_matches)
-	
-	#Outputs Mismatched Chords:
-	print("\nMismatched Chords: " + str(len(failed_matches)))
-	for chord in failed_matches: print(chord)
-	
-	#Computes Match / Miss Score:
+	#Outputs Computed Match / Miss:
 	print("\nScore:")
 	print("Matches: " + str(match))
 	print("Misses: " + str(miss))
 	print
-	print("Match/Miss Ratio: " + str(round(float(match)/float(match+miss),2)))
-	print
-		
+	print("Mismatched Chords: " + str(len(failed_matches)))
+	for chord in failed_matches: print(chord)
+	#print((failed_matches))
+	
+	
 	return
 
 #Error Message if Wrong Command Line Arguments Used:
