@@ -125,6 +125,7 @@ def Compare(chordlist_1, chordlist_2):
 		#print("i: " + str(i) + " j: " + str(j))
 		
 		if(abs(diff) > dx):
+			failed_matches.append([chordlist_1[i], chordlist_2[j]])
 			if(diff > 0): j += 1
 			else: i += 1
 			miss += 1
@@ -135,6 +136,7 @@ def Compare(chordlist_1, chordlist_2):
 			j += 1
 			
 		else:
+			failed_matches.append([chordlist_1[i], chordlist_2[j]])
 			miss += 1
 			i += 1
 			j += 1
@@ -143,15 +145,22 @@ def Compare(chordlist_1, chordlist_2):
 		
 		elif(chd1_length <= i):
 			miss += chd2_length - j
+			for k in range(j, chd2_length): failed_matches.append(["List 1 Ended", "N"], chordlist_2[k])
 			exit = True
 			
 		elif(chd2_length <= j):
 			miss += chd1_length - i
+			for k in range(i, chd1_length): failed_matches.append([chordlist_1[k],["List 2 Ended", "N"]])
 			exit = True
 		
 	#Outputs Computed Match / Miss:
+	print("\nScore:")
 	print("Matches: " + str(match))
 	print("Misses: " + str(miss))
+	print
+	print("Mismatched Chords: " + str(len(failed_matches)))
+	for chord in failed_matches: print(chord)
+	#print((failed_matches))
 	
 	
 	return
@@ -176,7 +185,9 @@ mirex_filename = sys.argv[2]
 
 #Parses File into Python List (where each element is a list of time/chord):
 chordino_chordlist = ChordinoFileInput(chordino_filename)
+#mirex_chordlist = ChordinoFileInput(mirex_filename)
 mirex_chordlist = MirexFileInput(mirex_filename)
+
 
 #Compares and Computes Score:
 Compare(chordino_chordlist, mirex_chordlist)
