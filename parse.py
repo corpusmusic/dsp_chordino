@@ -124,16 +124,33 @@ def Compare(chordlist_1, chordlist_2):
 		#print(str(chordlist_1[i][0]) + " " + chordlist_1[i][1]  + " vs " + str(chordlist_2[j][0]) + " " + chordlist_2[j][1])
 		#print("i: " + str(i) + " j: " + str(j))
 		
+		
 		if(abs(diff) > dx):
 			failed_matches.append([chordlist_1[i], chordlist_2[j]])
 			if(diff > 0): j += 1
 			else: i += 1
 			miss += 1
 		
+		elif("/" in chordlist_1[i][1]):
+			chord1, chord2 = chordlist_1[i][1].split("/")
+			
+			if(chord1 in chordlist_2[j][1] or chord2 in chordlist_2[j][1]):
+				match += 1
+				i += 1
+				j += 1
+			
+			else:
+				failed_matches.append([chordlist_1[i], chordlist_2[j]])
+				miss += 1
+				i += 1
+				j += 1
+			
+		
 		elif(chordlist_1[i][1] == chordlist_2[j][1]):
 			match += 1
 			i += 1
 			j += 1
+		
 			
 		else:
 			failed_matches.append([chordlist_1[i], chordlist_2[j]])
