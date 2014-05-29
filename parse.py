@@ -176,16 +176,17 @@ def Compare(chordlist_1, chordlist_2):
 			for k in range(i, chd1_length): failed_matches.append([chordlist_1[k],["List 2 Ended", "N"]])
 			exit = True
 		
-	#Outputs Computed Match / Miss:
+	#Outputs Mismatched Chords:
+	print("\nMismatched Chords: " + str(len(failed_matches)))
+	for chord in failed_matches: print(chord)
+	
+	#Computes Match / Miss Score:
 	print("\nScore:")
 	print("Matches: " + str(match))
 	print("Misses: " + str(miss))
 	print
 	print("Match/Miss Ratio: " + str(round(float(match)/float(match+miss),2)))
 	print
-	print("Mismatched Chords: " + str(len(failed_matches)))
-	for chord in failed_matches: print(chord)
-	#print((failed_matches))
 		
 	return
 
