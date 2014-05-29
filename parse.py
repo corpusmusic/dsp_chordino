@@ -100,6 +100,73 @@ def MatchedChord(match, i, j):
 	return match, i, j
 
 
+def ReviewMissedChords(match, miss, failed_matches):
+
+    listLength = len(failed_matches)
+    dx = 1
+    j = 0
+    
+    print("List Length: " + str(listLength))
+    
+    #for k in range(0, listLength): print(k)
+    
+    for i in range(0, listLength):
+    
+    	print i
+        j += 1
+        diff_below = dx + 1
+        diff_above = dx + 1
+        
+        print(failed_matches[i])
+        print(str(failed_matches[i][1][0]) + " " + str(failed_matches[i][0][0]))
+    
+        
+    	if(i > 0): 
+    		diff_below = float(failed_matches[i - 1][1][0]) - float(failed_matches[i][0][0])
+    		print(diff_below)
+    	#if(i < listLength): diff_above = failed_matches[i + 1][0] - failed_matches[i][0]
+    	
+    	if abs(diff_below) <= dx:
+    		if("/" in failed_matches[i][0][1]):
+    			#print(chord1)
+    			#print(chord2)
+    			chord1, chord2 = failed_matches[i][0][1].split("/")
+    			if(chord1 == failed_matches[i-1][1][1] or chord2 == failed_matches[i-1][1][0]):
+    				failed_matches.pop(i)
+    				failed_matches.pop(i-1)
+    				match += 1
+    				miss -= 1
+    		
+    		elif(failed_matches[i][0][1] == failed_matches[i-1][1][1]):
+    			failed_matches.pop(i)
+    			failed_matches.pop(i-1)
+    			match += 1
+    			miss -= 1
+    			
+    			
+    	if(i < listLength): diff_above = failed_matches[i + 1][0][0] - failed_matches[i][0][0]
+    			
+    	if abs(diff_above) <= dx:
+    		if("/" in failed_matches[i][0]):
+    			chord1, chord2 = failed_matches[i][1].split("/")
+    			if(chord1 == failed_matches[i+1][1] or chord2 == failed_matches[i+1][1]):
+    				failed_matches.pop(i+1)
+    				failed_matches.pop(i)
+    				match += 1
+    				miss -= 1
+    		
+    		elif(failed_matches[i][1] == failed_matches[i-1][1]):
+    			failed_matches.pop(i+1)
+    			failed_matches.pop(i)
+    			match += 1
+    			miss -=1
+    	#print("end of for, i: " + str(i))
+    
+    #print(listLength)
+    #print("j: " + str(j))
+    return match, miss, failed_matches
+
+
 #Proof of Concept Comparison, Needs Rewrite:
 def Compare(chordlist_1, chordlist_2):
 	
@@ -168,14 +235,16 @@ def Compare(chordlist_1, chordlist_2):
 		
 		elif(chd1_length <= i):
 			miss += chd2_length - j
-			for k in range(j, chd2_length): failed_matches.append(["List 1 Ended", "N"], chordlist_2[k])
+			for k in range(j, chd2_length): failed_matches.append([float("inf"), "N"], chordlist_2[k])
 			exit = True
 			
 		elif(chd2_length <= j):
 			miss += chd1_length - i
-			for k in range(i, chd1_length): failed_matches.append([chordlist_1[k],["List 2 Ended", "N"]])
+			for k in range(i, chd1_length): failed_matches.append([chordlist_1[k],[float("inf"), "N"]])
 			exit = True
 		
+	match, miss, failed_matches = ReviewMissedChords(match, miss, failed_matches)
+	
 	#Outputs Mismatched Chords:
 	print("\nMismatched Chords: " + str(len(failed_matches)))
 	for chord in failed_matches: print(chord)
