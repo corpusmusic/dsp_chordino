@@ -114,8 +114,8 @@ def ReviewMissedChords(match, miss, failed_matches):
     while(i < listLength - 1):
     #for i in range(0, listLength - 1):
     
-    	print(str(i) + " of " + str(listLength) )
-    	j += 1
+    	#print(str(i) + " of " + str(listLength) )
+    	#j += 1
         diff_below = dx + 1
         diff_above = dx + 1
         
@@ -125,7 +125,7 @@ def ReviewMissedChords(match, miss, failed_matches):
         
     	if(i > 0): 
     		diff_below = float(failed_matches[i - 1][1][0]) - float(failed_matches[i][0][0])
-    		print(diff_below)
+    		#print(diff_below)
     	#if(i < listLength): diff_above = failed_matches[i + 1][0] - failed_matches[i][0]
     	
     	if abs(diff_below) <= dx:
