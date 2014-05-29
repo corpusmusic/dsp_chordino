@@ -83,6 +83,23 @@ def MirexFileInput(filename):
 		
 	return chordlist
 
+def MissedChord(miss, i, j, failed_matches, chord1, chord2):
+	
+	miss += 1
+	i += 1
+	j += 1
+
+	return miss, i, j, failed_matches.append([chord1, chord2])
+	
+def MatchedChord(match, i, j):
+	
+	match += 1
+	i += 1
+	j += 1
+	
+	return match, i, j
+
+
 #Proof of Concept Comparison, Needs Rewrite:
 def Compare(chordlist_1, chordlist_2):
 	
@@ -135,9 +152,10 @@ def Compare(chordlist_1, chordlist_2):
 			chord1, chord2 = chordlist_1[i][1].split("/")
 			
 			if(chord1 in chordlist_2[j][1] or chord2 in chordlist_2[j][1]):
-				match += 1
-				i += 1
-				j += 1
+			    match, i, j = MatchedChord(match, i, j)
+				#match += 1
+				#i += 1
+				#j += 1
 			
 			else:
 				failed_matches.append([chordlist_1[i], chordlist_2[j]])
