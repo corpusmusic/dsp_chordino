@@ -83,13 +83,13 @@ def MirexFileInput(filename):
 		
 	return chordlist
 
-def MissedChord(miss, i, j, failed_matches, chord1, chord2):
+def MissedChord(miss, i, j):
 	
 	miss += 1
 	i += 1
 	j += 1
-
-	return miss, i, j, failed_matches.append([chord1, chord2])
+	
+	return miss, i, j
 	
 def MatchedChord(match, i, j):
 	
@@ -141,7 +141,6 @@ def Compare(chordlist_1, chordlist_2):
 		#print(str(chordlist_1[i][0]) + " " + chordlist_1[i][1]  + " vs " + str(chordlist_2[j][0]) + " " + chordlist_2[j][1])
 		#print("i: " + str(i) + " j: " + str(j))
 		
-		
 		if(abs(diff) > dx):
 			failed_matches.append([chordlist_1[i], chordlist_2[j]])
 			if(diff > 0): j += 1
@@ -153,28 +152,17 @@ def Compare(chordlist_1, chordlist_2):
 			
 			if(chord1 in chordlist_2[j][1] or chord2 in chordlist_2[j][1]):
 			    match, i, j = MatchedChord(match, i, j)
-				#match += 1
-				#i += 1
-				#j += 1
 			
 			else:
 				failed_matches.append([chordlist_1[i], chordlist_2[j]])
-				miss += 1
-				i += 1
-				j += 1
-			
+				miss, i, j = MissedChord(miss, i, j)	
 		
 		elif(chordlist_1[i][1] == chordlist_2[j][1]):
-			match += 1
-			i += 1
-			j += 1
-		
+			match, i, j = MatchedChord(match, i, j)		
 			
 		else:
 			failed_matches.append([chordlist_1[i], chordlist_2[j]])
-			miss += 1
-			i += 1
-			j += 1
+			miss, i, j = MissedChord(miss, i, j)
 		
 		if(chd1_length <= i and chd2_length <= j): exit = True
 		
@@ -193,11 +181,12 @@ def Compare(chordlist_1, chordlist_2):
 	print("Matches: " + str(match))
 	print("Misses: " + str(miss))
 	print
+	print("Match/Miss Ratio: " + str(round(float(match)/float(match+miss),2)))
+	print
 	print("Mismatched Chords: " + str(len(failed_matches)))
 	for chord in failed_matches: print(chord)
 	#print((failed_matches))
-	
-	
+		
 	return
 
 #Error Message if Wrong Command Line Arguments Used:
